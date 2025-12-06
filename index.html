@@ -58,13 +58,19 @@
 
     .timer-container {
       width: 95vw;
-      padding: 8vw;
+      aspect-ratio: 16/9;
+      padding: 4vw;
       border-radius: 20px;
       background: var(--card-bg);
       box-shadow: var(--card-shadow);
       transition: background .25s, box-shadow .25s;
       text-align: center;
       position: relative;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .theme-toggle {
@@ -94,7 +100,7 @@
     }
 
     .display {
-      font-size: 8vw;
+      font-size: 13vw;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       margin-bottom: 3vw;
@@ -105,7 +111,7 @@
       justify-content: center;
       align-items: center;
       gap: .6rem;
-      margin-bottom: 14px;
+      margin-bottom: 4px;
     }
 
     input {
