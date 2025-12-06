@@ -1,305 +1,294 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Timer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timer</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-<style>
-:root {
-  --bg: transparent;
-  --fg: #1a1a1a;
+  <style>
+    :root {
+      --bg: transparent;
+      --fg: #1a1a1a;
 
-  --card-bg: #ffffff;
-  --card-shadow: 0 1px 3px rgba(0,0,0,.15);
+      --card-bg: #ffffff;
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, .15);
 
-  --btn-bg: #ffffff;
-  --btn-fg: #1a1a1a;
-  --btn-shadow: 0 1px 2px rgba(0,0,0,.18);
+      --btn-bg: #ffffff;
+      --btn-fg: #1a1a1a;
+      --btn-shadow: 0 1px 2px rgba(0, 0, 0, .18);
 
-  --input-border: rgba(0,0,0,.3);
-  --input-focus: rgba(0,0,0,.7);
-}
+      --input-border: rgba(0, 0, 0, .3);
+      --input-focus: rgba(0, 0, 0, .7);
+    }
 
-body.dark {
-  --bg: transparent; /* keep the page background transparent */
-  --fg: #ffffff;      /* text color inside the card */
-  
-  --card-bg: #1a1a1a; /* dark card */
-  --card-shadow: 0 1px 5px rgba(0,0,0,.6);
+    body.dark {
+      --fg: #ffffff;
+      --card-bg: #1a1a1a;
+      --card-shadow: 0 1px 5px rgba(0, 0, 0, .6);
 
-  --btn-bg: #1e1e1e;
-  --btn-fg: #ffffff;
-  --btn-shadow: 0 6px 16px rgba(0,0,0,.8);
+      --btn-bg: #1e1e1e;
+      --btn-fg: #ffffff;
+      --btn-shadow: 0 6px 16px rgba(0, 0, 0, .8);
 
-  --input-border: rgba(255,255,255,.25);
-  --input-focus: rgba(255,255,255,.7);
-}
+      --input-border: rgba(255, 255, 255, .25);
+      --input-focus: rgba(255, 255, 255, .7);
+    }
 
+    html,
+    body {
+      margin: 0;
+      padding: 3px;
+      height: 95vh;
+    }
 
-html, body {
-  margin: 0;
-  padding: 20px;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  overflow-x: hidden;
-}
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 95vh;
+      background: transparent;
+      color: var(--fg);
+      font-family: "JetBrains Mono", monospace;
+      box-sizing: border-box;
+    }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent; /* no background */
-  color: var(--fg);
-  font-family: "JetBrains Mono", monospace;
-  margin: 0;
-  box-sizing: border-box;
-}
+    .timer-container {
+      width: 95vw;
+      padding: 8vw;
+      border-radius: 20px;
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      transition: background .25s, box-shadow .25s;
+      text-align: center;
+      position: relative;
+    }
 
+    .theme-toggle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 12px;
+      font-size: 1rem;
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, opacity 0.2s, transform 0.2s;
+    }
 
-.timer-container {
-  width: 95vw;
-  padding: 20px 20px 28px;
-  border-radius: 20px;
-  background: var(--card-bg);
-  box-shadow: var(--card-shadow);
-  transition: background .25s, box-shadow .25s;
-  text-align: center;
-  position: relative;
-}
+    .theme-toggle img {
+      width: 1em;
+      height: 0.8em;
+      vertical-align: middle;
+    }
 
-/* Theme toggle capsule */
-.theme-toggle {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 4px 12px;
-  font-size: 0.9rem;
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  border-radius: 999px; /* capsule */
-  box-shadow: 0 6px 16px rgba(0,0,0,.2);
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, opacity 0.2s;
-}
-.theme-toggle:hover {
-  opacity: 0.85;
-}
+    .theme-toggle:hover {
+      opacity: 0.85;
+      transform: scale(1.1);
+    }
 
-/* Time display */
-.display {
-  font-size: 3.2rem;
-  font-weight: 700; /* bold */
-  font-variant-numeric: tabular-nums;
-  margin-bottom: 20px;
-}
+    .display {
+      font-size: 8vw;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 3vw;
+    }
 
-/* Input row */
-.input-group {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: .6rem;
-  margin-bottom: 14px;
-}
+    .input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 14px;
+    }
 
-input {
-  width: 3.2rem;
-  padding: 8px;
-  background: transparent;
-  color: var(--fg);
+    input {
+      width: 10vw;
+      padding: 0.8vw;
+      background: transparent;
+      color: var(--fg);
+      font-size: 2.5vw;
+      text-align: center;
+      font-weight: 400;
+      border: 0.3vw solid var(--input-border);
+      border-radius: 3vw;
+      outline: none;
+    }
 
-  font-size: .9rem;
-  text-align: center;
-  font-weight: 400;
+    input:focus {
+      border-color: var(--input-focus);
+      border-width: 3px;
+    }
 
-  border: 2px solid var(--input-border);
-  border-radius: 14px;
+    .input-label {
+      font-size: 2vw;
+      opacity: .7;
+    }
 
-  transition: border-color .2s, background .2s, color .2s;
-  outline: none;
-}
+    button {
+      font-family: inherit;
+      font-size: 2.5vw;
+      padding: 1vw 4vw;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      box-shadow: var(--btn-shadow);
+      transition: background .2s, color .2s, opacity .15s;
+    }
 
-/* Remove arrows */
-input::-webkit-inner-spin-button,
-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
-}
+    button:hover {
+      opacity: .8;
+    }
 
-input:focus {
-  border-color: var(--input-focus);
-  border-width: 3px;
-}
+    button:active {
+      opacity: .6;
+    }
 
-.input-label {
-  font-size: .75rem;
-  opacity: .7;
-}
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: .6rem;
+      margin-top: 14px;
+    }
 
-/* Buttons */
-button {
-  font-family: inherit;
-  font-size: .85rem;
-  padding: 8px 14px;
+    .play-pause-btn img {
+      width: 3vw;
+      vertical-align: middle;
+    }
 
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  box-shadow: var(--btn-shadow);
-
-  transition: background .2s, color .2s, opacity .15s;
-}
-
-button:hover {
-  opacity: .8;
-}
-button:active {
-  opacity: .6;
-}
-
-/* Controls row */
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: .6rem;
-  margin-top: 14px;
-}
-.play-pause-btn {
-  width: 100%;
-  max-width: 95px;
-}
-
-/* SET btn smaller */
-#setBtn {
-  font-size: .75rem;
-  padding: 6px 12px;
-}
-</style>
+    #setBtn {
+      font-size: 2vw;
+      padding: 1vw 2vw;
+    }
+  </style>
 </head>
 
 <body>
-<div class="timer-container">
-  <!-- Theme toggle capsule inside the card -->
-  <button class="theme-toggle" id="themeToggle">🌙</button>
+  <div class="timer-container">
+    <button class="theme-toggle" id="themeToggle">
+      <img id="themeIcon" src="" alt="theme icon">
+    </button>
 
-  <div class="display" id="display">00:00</div>
+    <div class="display" id="display">00:00</div>
 
-  <div class="input-group">
-    <input type="number" id="minutesInput" min="0" max="999" value="0">
-    <span class="input-label">m</span>
+    <div class="input-group">
+      <input type="number" id="minutesInput" min="0" max="999" value="0">
+      <span class="input-label">m</span>
+      <input type="number" id="secondsInput" min="0" max="59" value="0">
+      <span class="input-label">s</span>
+      <button id="setBtn">SET</button>
+    </div>
 
-    <input type="number" id="secondsInput" min="0" max="59" value="0">
-    <span class="input-label">s</span>
-
-    <button id="setBtn">SET</button>
+    <div class="controls">
+      <button class="play-pause-btn" id="playPauseBtn">
+        <img id="playPauseIcon" src="" alt="play">
+      </button>
+      <button id="resetBtn">RESET</button>
+    </div>
   </div>
 
-  <div class="controls">
-    <button class="play-pause-btn" id="playPauseBtn">▶</button>
-    <button id="resetBtn">RESET</button>
-  </div>
-</div>
+  <script>
+    let seconds = 0;
+    let interval = null;
+    let isRunning = false;
 
-<script>
-let seconds = 0;
-let interval = null;
-let isRunning = false;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const display = document.getElementById('display');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const minutesInput = document.getElementById('minutesInput');
+    const secondsInput = document.getElementById('secondsInput');
+    const setBtn = document.getElementById('setBtn');
 
-const display = document.getElementById('display');
-const playPauseBtn = document.getElementById('playPauseBtn');
-const resetBtn = document.getElementById('resetBtn');
-const themeToggle = document.getElementById('themeToggle');
-const minutesInput = document.getElementById('minutesInput');
-const secondsInput = document.getElementById('secondsInput');
-const setBtn = document.getElementById('setBtn');
+    // Icons
+    const sunIcon = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3e%3cpath d='M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5M2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1m18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1M11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1m0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1M5.99 4.58a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41zm12.37 12.37a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 0 0 0-1.41zm1.06-10.96a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06a.996.996 0 0 0 0 1.41c.39.38 1.03.39 1.41 0zM7.05 18.36a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06a.996.996 0 0 0 0 1.41c.39.38 1.03.39 1.41 0z'/%3e%3c/svg%3e";
+    const moonIcon = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 24 24'%3e%3cpath d='M11.032 3.027c-4.5.49-8.01 4.31-8.01 8.95a9 9 0 0 0 9 9c4.63 0 8.45-3.5 8.95-8 .09-.79-.78-1.42-1.54-.95a5.403 5.403 0 0 1-8.31-4.55c0-1.06.31-2.06.84-2.89.45-.67-.04-1.63-.93-1.56'/%3e%3c/svg%3e";
 
-// Theme toggle
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-});
+    const playIconLight = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 16 16'%3e%3cpath d='m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393'/%3e%3c/svg%3e";
+    const pauseIconLight = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='black' viewBox='0 0 16 16'%3e%3cpath d='M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5'/%3e%3c/svg%3e";
+    const playIconDark = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3e%3cpath d='m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393'/%3e%3c/svg%3e";
+    const pauseIconDark = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3e%3cpath d='M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5'/%3e%3c/svg%3e";
 
-// Display time
-function updateDisplay() {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  display.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-}
-
-// Play/pause UI update
-function updatePlayPauseButton() {
-  playPauseBtn.textContent = isRunning ? '⏸' : '▶';
-}
-
-// Core timer functions
-function start() {
-  if (seconds === 0) return;
-  isRunning = true;
-  updatePlayPauseButton();
-
-  interval = setInterval(() => {
-    if (seconds > 0) {
-      seconds--;
-      updateDisplay();
-    } else {
-      pause();
+    function updateDisplay() {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
-  }, 1000);
-}
 
-function pause() {
-  isRunning = false;
-  updatePlayPauseButton();
-  if (interval) {
-    clearInterval(interval);
-    interval = null;
-  }
-}
+    function updateIcons() {
+      // Theme icon
+      themeIcon.src = document.body.classList.contains('dark') ? sunIcon : moonIcon;
 
-function togglePlayPause() {
-  isRunning ? pause() : start();
-}
+      // Play/pause icon
+      if (document.body.classList.contains('dark')) {
+        playPauseIcon.src = isRunning ? pauseIconDark : playIconDark;
+      } else {
+        playPauseIcon.src = isRunning ? pauseIconLight : playIconLight;
+      }
+    }
 
-function reset() {
-  pause();
-  seconds = 0;
-  updateDisplay();
-  minutesInput.value = 0;
-  secondsInput.value = 0;
-}
+    function start() {
+      if (seconds === 0) return;
+      isRunning = true;
+      updateIcons();
+      interval = setInterval(() => {
+        if (seconds > 0) {
+          seconds--;
+          updateDisplay();
+        } else { pause(); }
+      }, 1000);
+    }
 
-function setTime() {
-  pause();
-  const mins = parseInt(minutesInput.value) || 0;
-  const secs = parseInt(secondsInput.value) || 0;
-  seconds = (mins * 60) + secs;
-  updateDisplay();
-}
+    function pause() {
+      isRunning = false;
+      updateIcons();
+      if (interval) { clearInterval(interval); interval = null; }
+    }
 
-// Event listeners
-playPauseBtn.addEventListener('click', togglePlayPause);
-resetBtn.addEventListener('click', reset);
-setBtn.addEventListener('click', setTime);
+    function togglePlayPause() { isRunning ? pause() : start(); }
 
-minutesInput.addEventListener('keypress', e => e.key === 'Enter' && setTime());
-secondsInput.addEventListener('keypress', e => e.key === 'Enter' && setTime());
+    function reset() {
+      pause();
+      seconds = 0;
+      updateDisplay();
+      minutesInput.value = 0;
+      secondsInput.value = 0;
+    }
 
-// Initialize
-updateDisplay();
-updatePlayPauseButton();
-</script>
+    function setTime() {
+      pause();
+      const mins = parseInt(minutesInput.value) || 0;
+      const secs = parseInt(secondsInput.value) || 0;
+      seconds = mins * 60 + secs;
+      updateDisplay();
+    }
+
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    resetBtn.addEventListener('click', reset);
+    setBtn.addEventListener('click', setTime);
+    minutesInput.addEventListener('keypress', e => e.key === 'Enter' && setTime());
+    secondsInput.addEventListener('keypress', e => e.key === 'Enter' && setTime());
+
+    // Theme toggle
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      updateIcons();
+    });
+
+    // Initial setup
+    updateIcons();
+    updateDisplay();
+  </script>
 </body>
+
 </html>
