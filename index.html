@@ -124,11 +124,9 @@
     /* ------------------------
        Functions
     ------------------------- */
-
     function updateDisplay() {
-      let m = Math.floor(seconds / 60);
-      let s = seconds % 60;
-
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
       timerDisplay.textContent =
         String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
     }
@@ -144,10 +142,8 @@
 
       isRunning = true;
 
-      /* Save the starting point for persistence */
       localStorage.setItem("timerStart", Date.now());
       localStorage.setItem("timerDuration", seconds);
-
       localStorage.setItem("minutes", minInput.value);
       localStorage.setItem("seconds", secInput.value);
 
@@ -184,24 +180,20 @@
     }
 
     /* ------------------------
-       Safe Load for Notion
+       Initialization
+       Works on web & Notion
     ------------------------- */
-
-    window.onload = () => {
+    function initTimer() {
       const savedMinutes = localStorage.getItem("minutes");
       const savedSeconds = localStorage.getItem("seconds");
       const savedTheme = localStorage.getItem("theme");
       const savedStart = localStorage.getItem("timerStart");
       const savedDuration = localStorage.getItem("timerDuration");
 
-      if (savedTheme === "dark") {
-        document.body.classList.add("dark");
-      }
-
+      if (savedTheme === "dark") document.body.classList.add("dark");
       if (savedMinutes !== null) minInput.value = savedMinutes;
       if (savedSeconds !== null) secInput.value = savedSeconds;
 
-      /* Restore timer using elapsed time */
       if (savedStart && savedDuration) {
         const elapsed = Math.floor((Date.now() - Number(savedStart)) / 1000);
         const remaining = Number(savedDuration) - elapsed;
@@ -217,17 +209,23 @@
           localStorage.removeItem("timerStart");
           localStorage.removeItem("timerDuration");
         }
+      } else {
+        updateDisplay();
       }
-    };
+    }
+
+    if (window.self !== window.top) {
+      // Inside Notion → wait for load
+      window.onload = initTimer;
+    } else {
+      // Open web → run immediately
+      initTimer();
+    }
 
     /* ------------------------
        Event Listeners
     ------------------------- */
-
-    startBtn.addEventListener("click", () => {
-      if (!isRunning) startTimer();
-    });
-
+    startBtn.addEventListener("click", () => { if (!isRunning) startTimer(); });
     stopBtn.addEventListener("click", stopTimer);
     resetBtn.addEventListener("click", resetTimer);
 
@@ -239,7 +237,6 @@
       );
     });
   </script>
-
 </body>
 
 </html>
